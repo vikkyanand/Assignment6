@@ -1,36 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectUsers, setUsers } from '../reducers/userSlice';
 import axios from 'axios';
-import UserEditForm from './UserEditForm';
-import UserDeleteButton from './UserDeleteButton';
+
 
 interface User {
     id: string;
     firstName: string;
     lastName: string;
-    address: string;
     email: string;
+    address: string;
     location: string;
 }
 
 const UserList: React.FC = () => {
-    const [users, setUsers] = useState<User[]>([]);
-    const [editUserId, setEditUserId] = useState<string | null>(null);
+    const dispatch = useDispatch();
+    const users = useSelector(selectUsers);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get<User[]>('https://localhost:7097/api/users');
-                setUsers(response.data);
+                const response = await axios.get<User[]>('https://localhost:7013/api/users');
+                dispatch(setUsers(response.data));
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
         };
         fetchUsers();
-    }, []);
-
-    const handleEdit = (userId: string) => {
-        setEditUserId(userId);
-    };
+    }, [dispatch]);
 
     return (
         <div>
@@ -38,15 +35,10 @@ const UserList: React.FC = () => {
             <ul>
                 {users.map(user => (
                     <li key={user.id}>
-                        {editUserId === user.id ? (
-                            <UserEditForm user={user} />
-                        ) : (
-                            <>
-                                {user.firstName} {user.lastName} - {user.email} - {user.location}
-                                <button onClick={() => handleEdit(user.id)}>Edit</button>
-                                <UserDeleteButton userId={user.id} />
-                            </>
-                        )}
+                        <div>{user.firstName} {user.lastName}</div>
+                        <div>{user.email}</div>
+                        <div>{user.address}</div>
+                        <div>{user.location}</div>
                     </li>
                 ))}
             </ul>
