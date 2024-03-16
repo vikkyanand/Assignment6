@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\actions\" />
+    <Folder Include="src\reducers\" />
     <Folder Include="src\store\" />
   </ItemGroup>
 </Project>

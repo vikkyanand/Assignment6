@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateUser } from '../reducers/userSlice';
 import axios from 'axios';
-
 
 interface User {
     id: string;
@@ -15,17 +17,15 @@ interface UserEditFormProps {
 }
 
 const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
-    const [userData, setUserData] = useState(user);
+    const [userData] = useState(user);
+    const dispatch = useDispatch();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserData({ ...userData, [e.target.name]: e.target.value });
-    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await axios.put(`https://localhost:7097/api/users/${userData.id}`, userData);
-            // Handle success
+            await axios.put(`https://localhost:7013/api/users/${userData.id}`, userData);
+            dispatch(updateUser(userData)); // Dispatch action to update user in Redux store
         } catch (error) {
             console.error('Error updating user:', error);
         }
@@ -35,11 +35,7 @@ const UserEditForm: React.FC<UserEditFormProps> = ({ user }) => {
         <div>
             <h2>Edit User</h2>
             <form onSubmit={handleSubmit}>
-                <input type="text" name="firstName" value={userData.firstName} onChange={handleChange} />
-                <input type="text" name="lastName" value={userData.lastName} onChange={handleChange} />
-                <input type="text" name="address" value={userData.address} onChange={handleChange} />
-                <input type="email" name="email" value={userData.email} onChange={handleChange} />
-                <input type="text" name="location" value={userData.location} onChange={handleChange} />
+                {/* Input fields for editing user details */}
                 <button type="submit">Update</button>
             </form>
         </div>

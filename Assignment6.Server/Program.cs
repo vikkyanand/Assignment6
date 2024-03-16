@@ -1,4 +1,3 @@
-// Program.cs
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +15,7 @@ builder.Services.AddSingleton<IMongoDatabase>(serviceProvider =>
     return mongoClient.GetDatabase("User6");
 });
 
+
 // Add controllers and services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -23,6 +23,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Configure CORS
+app.UseCors(builder => builder
+    .WithOrigins("https://localhost:5173")
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+);
+app.UseRouting();
 // Configure middleware, routes, etc.
 if (app.Environment.IsDevelopment())
 {
@@ -35,6 +42,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+
+
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
